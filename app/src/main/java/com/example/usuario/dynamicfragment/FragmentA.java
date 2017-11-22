@@ -1,7 +1,6 @@
 package com.example.usuario.dynamicfragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
@@ -35,14 +34,14 @@ public class FragmentA extends Fragment {
     public interface FragmentAListener {
         void onFragmentAEvent(String mensaje, int size);
     }
-    public FragmentA() { }
+
     /**
      * Obsoleto desde API 23
      * @param activity Actividad padre del fragment
      */
     @Override
     public void onAttach(Activity activity) {
-        Log.d("FragmentA", "onAttach(activity)");
+        Log.d(FRAG_A, "onAttach(activity)");
         super.onAttach(activity);
         try {
             mCallBack = (FragmentAListener) activity;
@@ -50,29 +49,36 @@ public class FragmentA extends Fragment {
             throw new ClassCastException(activity.toString() + " must implement FragmentAListener");
         }
     }
+    /**
+     * Este método solo funciona desde la API 23 en adelante.
+     * Si se ejecuta en una API inferior NO DA ERROR PERO NO FUNCIONA LA COMUNICACIÓN Activity-Fragment
+      * */
+    /*
+    @Override
+    public void onAttach(Context context) {
+        Log.d("FragmentA", "onAttach(context)");
+        super.onAttach(context);
+    }
+    */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(FRAG_A, "onCreate()");
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("FragmentA", "onCreateView()");
         //Por corrección implementa el superconstructor aunque no lo ponga el IDE.
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragmenta, container, false);
-        if (rootView != null) {
-            edtMessage = (EditText) rootView.findViewById(R.id.edtMessage);
-            skbSize = (SeekBar) rootView.findViewById(R.id.skbSize);
-            btnSize = (Button) rootView.findViewById(R.id.btnSize);
-            btnSize.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCallBack.onFragmentAEvent(edtMessage.getText().toString(), skbSize.getProgress());
-                }
-            });
-        }
+        edtMessage = rootView.findViewById(R.id.edtMessage);
+        skbSize = rootView.findViewById(R.id.skbSize);
+        btnSize = rootView.findViewById(R.id.btnSize);
+        Log.d(FRAG_A, "onCreateView()");
         return rootView;
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d("FragmentA", "onViewCreated()");
         super.onViewCreated(view, savedInstanceState);
         btnSize.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,20 +86,42 @@ public class FragmentA extends Fragment {
                 mCallBack.onFragmentAEvent(edtMessage.getText().toString(), skbSize.getProgress());
             }
         });
-    }
-    /**
-     * Este método solo funciona desde la API 23 en adelante.
-     * Si se ejecuta en una API inferior NO DA ERROR PERO NO FUNCIONA LA COMUNICACIÓN Activity-Fragment
-      * */
-    @Override
-    public void onAttach(Context context) {
-        Log.d("FragmentA", "onAttach(context)");
-        super.onAttach(context);
+        Log.d(FRAG_A, "onViewCreated()");
     }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        Log.d("FragmentA", "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
+        Log.d(FRAG_A, "onActivityCreated()");
     }
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(FRAG_A, "onStart()");
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(FRAG_A, "onPause()");
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(FRAG_A, "onStop()");
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(FRAG_A, "onDestroy()");
+    }
+    @Override
+    public void onDestroyView() {
+        Log.d(FRAG_A, "onDestroyView()");
+        super.onDestroyView();
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallBack = null;
+        Log.d(FRAG_A, "onDetach()");
+    }
 }
